@@ -1,0 +1,135 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>KINGMAKER — Deployer Leaderboard</title>
+  <meta name="description" content="KINGMAKER tracks top Pump.fun deployers and crowns one DEV KING every day." />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <header class="nav shell">
+    <a class="brand" href="#top" aria-label="KINGMAKER home">
+      <span class="mark">♛</span>
+      <span>KINGMAKER</span>
+    </a>
+    <nav class="desktop-nav">
+      <a href="#leaderboard">Leaderboard</a>
+      <a href="#hall">Hall of Kings</a>
+      <a href="#score">Score</a>
+    </nav>
+    <a class="pill" href="#">Telegram ↗</a>
+  </header>
+
+  <main id="top">
+    <section class="hero shell">
+      <div class="hero-copy">
+        <div class="status"><span></span> <b id="dataMode">LOADING…</b> • <span id="updatedAt" class="updated">ROLLING 24H</span></div>
+        <h1>One launch.<br><em>One crown.</em></h1>
+        <p>KINGMAKER ranks Pump.fun deployers by traction, retention and real market strength — then crowns the strongest launch.</p>
+        <div class="hero-actions">
+          <a class="primary" href="#leaderboard">View leaderboard</a>
+          <a class="text-link" href="#score">How scoring works →</a>
+        </div>
+      </div>
+      <div class="hero-aside">
+        <div class="crown-orbit">♛</div>
+        <span>WHO RULES<br>THE TRENCHES<br>TODAY?</span>
+      </div>
+    </section>
+
+    <section class="shell king-wrap">
+      <div class="section-label">CURRENT DEV KING</div>
+      <article class="king-card">
+        <div class="king-id">
+          <div class="avatar">♛</div>
+          <div>
+            <div class="wallet" id="kingWallet">—</div>
+            <div class="best">Best launch <strong id="kingToken">—</strong></div>
+          </div>
+        </div>
+        <div class="king-score">
+          <span>KING SCORE</span>
+          <strong id="kingScore">—</strong>
+          <small>↑ 3.2 today</small>
+        </div>
+        <div class="stat"><span>Current MC</span><strong id="kingMc">—</strong></div>
+        <div class="stat"><span>Retention</span><strong id="kingRetention">—</strong></div>
+        <div class="stat"><span>Traders</span><strong id="kingTraders">—</strong></div>
+        <div class="stat"><span>Graduated</span><strong id="kingGraduated">—</strong></div>
+      </article>
+    </section>
+
+    <section id="leaderboard" class="shell section">
+      <div class="section-head">
+        <div>
+          <div class="section-label">LEADERBOARD</div>
+          <h2>Top deployers</h2>
+        </div>
+        <div class="tabs" role="tablist" aria-label="Leaderboard period">
+          <button class="tab active" data-range="24h">24H</button>
+          <button class="tab" data-range="7d">7D</button>
+          <button class="tab" data-range="30d">30D</button>
+        </div>
+      </div>
+
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Rank</th>
+              <th>Deployer</th>
+              <th>Best launch</th>
+              <th>Peak MC</th>
+              <th>Retention</th>
+              <th>Traders</th>
+              <th class="right">Score</th>
+            </tr>
+          </thead>
+          <tbody id="leaderboardRows"></tbody>
+        </table>
+      </div>
+    </section>
+
+    <section id="hall" class="shell section split-section">
+      <div class="split-copy">
+        <div class="section-label">HALL OF KINGS</div>
+        <h2>Yesterday expires.<br>The crown doesn't.</h2>
+        <p>Daily winners are permanently recorded in the Hall of Kings.</p>
+      </div>
+      <div class="hall-list" id="hallGrid"></div>
+    </section>
+
+    <section id="score" class="shell section score-section">
+      <div class="section-head score-title">
+        <div>
+          <div class="section-label">KING SCORE v1.0</div>
+          <h2>Built for strong launches.</h2>
+        </div>
+        <p>Not just one green candle. Scores reward real users, market strength and staying power.</p>
+      </div>
+
+      <div class="score-list">
+        <div class="score-row"><span>Unique traders</span><div><i style="--w:100%"></i></div><strong>30</strong></div>
+        <div class="score-row"><span>Current market cap</span><div><i style="--w:67%"></i></div><strong>20</strong></div>
+        <div class="score-row"><span>MC retention</span><div><i style="--w:67%"></i></div><strong>20</strong></div>
+        <div class="score-row"><span>MEV-filtered volume</span><div><i style="--w:67%"></i></div><strong>20</strong></div>
+        <div class="score-row"><span>Graduation</span><div><i style="--w:33%"></i></div><strong>10</strong></div>
+      </div>
+
+      <div class="note">
+        <span>ANTI-GAMING</span>
+        Each deployer is represented by its best launch, so mass-deploying does not stack scores. Trading data uses Bitquery's MEV-filtered trade cube; deeper wash-trade clustering is planned for the next scoring revision.
+      </div>
+    </section>
+  </main>
+
+  <footer class="shell footer">
+    <div><span class="mark small">♛</span> KINGMAKER</div>
+    <div class="contract">CONTRACT <span>NOT LAUNCHED YET</span></div>
+    <div class="legal">Unofficial. Not affiliated with Pump.fun.</div>
+  </footer>
+
+  <script src="app.js"></script>
+</body>
+</html>
