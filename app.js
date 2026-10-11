@@ -1,7 +1,7 @@
 const DEMO = [
-  {creatorShort:'7xQe...P4s',symbol:'BANANA',peakMc:4820000,currentMc:3110000,retention:64.5,traders:8421,volume:7400000,graduated:true,score:94.7},
-  {creatorShort:'Ax71...Zp2',symbol:'ROBOT',peakMc:2310000,currentMc:1660000,retention:71.8,traders:6944,volume:4900000,graduated:true,score:89.2},
-  {creatorShort:'4Lpm...83D',symbol:'CAT',peakMc:1760000,currentMc:1020000,retention:58,traders:5201,volume:3400000,graduated:true,score:84.6}
+  {creatorShort:'7xQe...P4s',symbol:'BANANA',peakMc:4820000,currentMc:3110000,retention:64.5,transactions:8421,volume:7400000,graduated:true,score:94.7},
+  {creatorShort:'Ax71...Zp2',symbol:'ROBOT',peakMc:2310000,currentMc:1660000,retention:71.8,transactions:6944,volume:4900000,graduated:true,score:89.2},
+  {creatorShort:'4Lpm...83D',symbol:'CAT',peakMc:1760000,currentMc:1020000,retention:58,transactions:5201,volume:3400000,graduated:true,score:84.6}
 ];
 let activeRange='24h';
 function money(v){
@@ -17,7 +17,7 @@ function renderKing(k, isDemo=false){
   document.getElementById('kingScore').textContent=Number(k.score||0).toFixed(1);
   document.getElementById('kingMc').textContent=money(k.currentMc);
   document.getElementById('kingRetention').textContent=Number(k.retention||0).toFixed(1)+'%';
-  document.getElementById('kingTraders').textContent=num(k.traders);
+  document.getElementById('kingTraders').textContent=num(k.transactions ?? k.traders);
   document.getElementById('kingGraduated').textContent=k.graduated?'Yes':'No';
   setMode(isDemo?'DEMO DATA':'LIVE ON-CHAIN',!isDemo);
 }
@@ -28,7 +28,7 @@ function renderBoard(rows){
     <td class="token-pill">$${r.symbol||'?'}</td>
     <td>${money(r.peakMc)}</td>
     <td class="retention good">${Number(r.retention||0).toFixed(1)}%</td>
-    <td>${num(r.traders)}</td>
+    <td>${num(r.transactions ?? r.traders)}</td>
     <td><span class="score-pill">${Number(r.score||0).toFixed(1)}</span></td>
   </tr>`).join('');
 }
