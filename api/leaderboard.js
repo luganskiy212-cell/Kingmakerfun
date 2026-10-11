@@ -1,7 +1,7 @@
-const memoryCache = global.__kingmakerSupabaseCacheV22 || (global.__kingmakerSupabaseCacheV22 = new Map());
+const memoryCache = global.__kingmakerSupabaseCacheV23 || (global.__kingmakerSupabaseCacheV23 = new Map());
 const CACHE_MS = 60 * 1000;
 
-const SCORE_VERSION = '2.2';
+const SCORE_VERSION = '2.3';
 const MIN_TXNS = 50;
 const MIN_VOLUME = 5000;
 const KING_MIN_AGE_MINUTES = 60;
@@ -212,9 +212,10 @@ async function buildLeaderboard(range) {
     range,
     generatedAt: new Date().toISOString(),
     source: 'PumpPortal → Supabase → DexScreener',
-    methodology: 'KING SCORE v2.2 — 25 MC / 25 volume / 20 transactions / 15 retention / 10 graduation / 5 liquidity − drawdown penalty',
+    methodology: 'KING SCORE v2.3 — 25 MC / 25 volume / 20 transactions / 15 retention / 10 graduation / 5 liquidity − drawdown penalty',
     eligibility: `Crown: ≥${MIN_TXNS} txns, ≥$${MIN_VOLUME.toLocaleString('en-US')} 24h volume and ≥${KING_MIN_AGE_MINUTES}m old. Under ${KING_MIN_AGE_MINUTES}m = LIVE CHALLENGER.`,
     drawdownRule: 'Retention ≥70%: 0; 40–69.99%: −5; 20–39.99%: −10; 5–19.99%: −20; <5%: −30',
+    dataIntegrity: 'DexScreener base-token pair only; stale pre-launch pairs rejected by collector v1.3',
     scannedTokens: allTokens.length,
     brandSafeTokens: safeTokens.length,
     qualifiedTokens: qualified.length,
