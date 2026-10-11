@@ -1,4 +1,4 @@
-const memoryCache = global.__kingmakerSupabaseCacheV24 || (global.__kingmakerSupabaseCacheV24 = new Map());
+const memoryCache = global.__kingmakerSupabaseCacheV25 || (global.__kingmakerSupabaseCacheV25 = new Map());
 const CACHE_MS = 60 * 1000;
 
 const SCORE_VERSION = '2.4';
@@ -11,6 +11,75 @@ const RETENTION_FULL_WEIGHT_MINUTES = 180;
 const BLOCKED_FRAGMENTS = [
   'nigger', 'nigga', 'nigr', 'faggot', 'kike', 'chink'
 ];
+
+const SUPPORTED_PAIR_ASSET_MINTS = new Set([
+  'So11111111111111111111111111111111111111112',
+  'EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v',
+  'XsbEhLAtcf6HdfpFZ5xEMdqW8nfAvcsP5bdudRLJzJp',
+  'Xs6B6zawENwAbWVi7w92rjazLuAr5Az59qgWKcNb45x',
+  'XsoCS1TfEyfFhfvj8EtZ528L3CaKBDBRqRapnBbDF2W',
+  'Xsv9hRk1z5ystj9MhnA7Lq4vjSsLwzL2nxrwmwtD3re',
+  'XsCPL9dNWBMvFtTmwcCA5v3xWPSMEBCszbQdiLLq6aN',
+  'XsDoVfqeBukxuZHWhdvWHBhgEHjGNst4MLodqsJHzoB',
+  'XsvNBAYkrDRNhA7wPHQfX3ZUXZyZLdnCQDfHZ56bzpg',
+  'Xsc9qvGR1efVDFGLrVsmkzv3qi45LTBjeUKSPmx9qEh',
+  'XsueG8BtpquVJX9LVLLEGuViXUungE6WmK5YZ3p3bd1',
+  'Xs3eBt7uRfJX8QUs4suhyU8p2M6DoUDrJyWBa8LLZsg',
+  'Xs7ZdzSHLU9ftNJsii5fCeJhoRWSC32SQGzGQtePxNu',
+  'XsP7xzNPvEHS1m6qfanPUGjNmdnmsLKEoNAnHjdxxyZ',
+  'Xsa62P5mvPszXL1krVUnU5ar38bBSVcWAB6fmPCo5Zu',
+  'Xs8S1uUs1zvS2p7iwtsG3b6fkhpvmwz4GYU3gWAmWHZ',
+  'XsqE9cRRpzxcGKDXj1BJ7Xmg4GRhZoyY1KpmGSxAWT2',
+  'XsgSaSvNSqLTtFuyWPBhK9196Xb9Bbdyjj4fH3cPJGo',
+  'XspzcW1PRtgf6Wj92HCiZdjzKCyFekVD8P5Ueh3dRMX',
+  'XsoBhf2ufR8fTyNSjqfU71DYGaE6Z3SUGAidpzriAA4',
+  'Xs78JED6PFZxWc2wCEPspZW9kL3Se5J7L5TChKgsidH',
+  'XsaBXg8dU5cPM6ehmVctMkVqoiRG2ZjMo1cyBJ3AykQ',
+  'Xsf9mBktVB9BSU5kf4nHxPq5hCBJ2j2ui3ecFGxPRGc',
+  'XshPgPdXFRWB8tP1j82rebb2Q9rPgGX37RuqzohmArM',
+  'XsfCC9VL4DamVGNgdJpfLXB3sBVa158Gbx8sh7NzmTk',
+  'PEAQjk7SRS6rXHVFFmpRr7zrC4g5ZuEebpwTxvaLr3b',
+  'NKEda5nHhNGgjrE9nDdMvaEmkmJ96qqxzBVZEcKmjSg',
+  'DoGEV7LASBkQbibMc5k5vKnTZoMg423GpJ5QtJEGfm7R',
+  'ARBzQTYDCW2KnVEjs1Mc81LekB1ibVFZKbSVmorkoT9d',
+  'AMC1qwR9KhiyrQBRPrxnfo4JfMeMZqEBvt5tgTytNNoc',
+  'GPRR2u6NS5yBQHWGauoJ9HXgjrTH8dDsrBfTV5zAYvDH',
+  '98sMhvDwXj1RQi5c5Mndm3vPe9cBqPrbLaufMXFNMh5g',
+  'A7bdiYdS5GjqGFtxf17ppRHtDKPkkRqbKtR27dxvQXaS',
+  '3ZLekZYq2qkZiSpnSvabjit34tUkjSwD1JFuW9as9wBG',
+  '6UpQcMAb5xMzxc7ZfPaVMgx3KqsvKZdT5U718BzD5We2',
+  'WXMRyRZhsa19ety5erZhHg4N3xj3EVN92u94422teJp',
+  'BArimz1PcKZr8PcPh3tcZ2dg4S7FJLk3cw6R5F8GsHKg',
+  'DJTu7vi8norVzdVAffgvb39VP7wjKeTsgaMBJrzfxvoF',
+  'HiMSSzzwkZkrXJ4PGVJRdtfLaANeAztjjcgk5Dxe7Lwx',
+  'BMKdM4yUxX12moFqVk195k7coMbaybd4RUKCUdm7D1Sk',
+  'JNJg1znKdF712Phe7L7z52AATAvEjEytBdN2w8Lnh1Y',
+  'LMT3i1BHgixFqPUgcyteJhnEz2dpy9i3cYy4pi9BoeV',
+  'EicWvteVi2fWepEzS3FYWsnuPoP6caZfjnKqNvydLjCH',
+  'pumpCmXqMfrsAkQ5r49WcJnRayYRqmXz6ae8H7H9Dfn',
+  'BABANGA4JE7Kkam4nTrALAwAVgsNJUuFJnnkF7S16BZp',
+  'BULL151gUXcFV5wXEUqu9Am2L7Qt4bTJRLRuAUjkcspC',
+  'CZEB3WNZuF2Yz1z2H81RcCk8T7fsw82KB33zqamASVsg',
+  'DELL2aRKQz7DMq5DrKLtkn47ZCnbxXPZXrSGbkmd13wy',
+  '9cRCn9rGT8V2imeM2BaKs13yhMEais3ruM3rPvTGpump',
+  'DKNGQFNGQmoBdXSRGKJ8tTu7uPDasw5JDcfMmWniNfow',
+  'oreoU2P8bN6jkk3jbaiVxYnG1dCXcYxwhwyK9jSybcp',
+  'GRNDYDpqwpCm6jVxpbh4xT5AM4r3p391qYsKTHqgaET2',
+  'DNUTsCvKbKwu2RM72cUuW3TD9YpzArzACcqYQssjPLSk',
+  'J8PSdNP3QewKq2Z1JJJFDMaqF7KcaiJhR7gbr5KZpump',
+  '6AJcP7wuLwmRYLBNbi825wgguaPsWzPBEHcHndpRpump',
+  '6NwarBvDkXhByqVp2Qkq5i9XbtA2B3Bwe8SWGu9vpump',
+  'he1iusmfkpAdwvxLNGV8Y1iSbj4rUy6yMhEA3fotn9A',
+  'SKRbvo6Gf7GondiT3BbTfuRDPqLWei4j2Qy2NPGZhW3',
+  'Dz9mQ9NzkBcCsuGPFJ3r1bS4wgqKMHBPiVuniW8Mbonk',
+  'DezXAZ8z7PnrnRJjz3wXBoRgixCa6xjnB7YaB1pPB263',
+  'EKpQGSJtjMFqKZ9KQanSqYXRcF8fBopzLHYxdM65zcjm',
+  '6p6xgHyF7AeE6TZkSmFsko444wqoP15icUSqi2jfGiPN',
+  'METvsvVRapdj9cFLzq4Tr43xK4tAjQfwX76z3n6mWQL',
+  '8XtRWb4uAAJFMP4QQhoYYCWR6XXb7ybcCdiqPwz9s5WS',
+  'GkyPYa7NnCFbduLknCfBfP7p8564X1VZhwZYJ6CZpump',
+]);
+
 
 function env() {
   const url = String(process.env.SUPABASE_URL || '').replace(/\/$/, '');
@@ -164,7 +233,8 @@ async function buildLeaderboard(range) {
     };
   }).filter(x => x.creator && x.mint && (x.currentMc > 0 || x.volume > 0 || x.graduated));
 
-  const safeTokens = allTokens.filter(x => isBrandSafe(x.name, x.symbol));
+  const nonPairAssetTokens = allTokens.filter(x => !SUPPORTED_PAIR_ASSET_MINTS.has(x.mint));
+  const safeTokens = nonPairAssetTokens.filter(x => isBrandSafe(x.name, x.symbol));
 
   // Qualified launches have enough real activity to be scored at all.
   // Under 60 minutes = LIVE CHALLENGER, 60+ minutes = eligible for the crown.
@@ -212,11 +282,12 @@ async function buildLeaderboard(range) {
     range,
     generatedAt: new Date().toISOString(),
     source: 'PumpPortal → Supabase → DexScreener',
-    methodology: 'KING SCORE v2.4 — 25 MC / 25 volume / 20 transactions / 15 retention / 10 graduation / 5 liquidity − drawdown penalty',
+    methodology: 'KING SCORE v2.5 — 25 MC / 25 volume / 20 transactions / 15 retention / 10 graduation / 5 liquidity − drawdown penalty',
     eligibility: `Crown: ≥${MIN_TXNS} txns, ≥$${MIN_VOLUME.toLocaleString('en-US')} 24h volume and ≥${KING_MIN_AGE_MINUTES}m old. Under ${KING_MIN_AGE_MINUTES}m = LIVE CHALLENGER.`,
     drawdownRule: 'Retention ≥70%: 0; 40–69.99%: −5; 20–39.99%: −10; 5–19.99%: −20; <5%: −30',
-    dataIntegrity: 'DexScreener base-token pair only; any pre-launch pair invalidates the mint (collector v1.4)',
+    dataIntegrity: 'DexScreener base-token pair only; supported pair-asset mints excluded + pre-launch pair guard (collector v1.5)',
     scannedTokens: allTokens.length,
+    pairAssetFilteredTokens: allTokens.length - nonPairAssetTokens.length,
     brandSafeTokens: safeTokens.length,
     qualifiedTokens: qualified.length,
     eligibleTokens: kingEligible.length,
