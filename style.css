@@ -38,3 +38,21 @@ button{font:inherit}
 @media(max-width:900px){.hero{grid-template-columns:1fr;min-height:570px}.hero-aside{display:none}.king-card{grid-template-columns:1.5fr 1fr 1fr}.stat:nth-last-child(-n+2){display:none}.split-section{grid-template-columns:1fr;gap:35px}.split-copy{position:static}.score-title{align-items:flex-start;gap:35px}.footer{grid-template-columns:1fr auto}.legal{display:none}}
 @media(max-width:650px){.shell{width:min(100% - 28px,1120px)}.nav{height:68px}.desktop-nav{display:none}.brand{font-size:11px}.hero{min-height:500px}.hero h1{font-size:58px}.hero p{font-size:14px}.hero-actions{align-items:flex-start;flex-direction:column;gap:16px}.king-wrap{padding-top:48px}.king-card{grid-template-columns:1fr 90px;gap:18px}.king-score{padding-right:0;border-right:0;text-align:right}.stat{display:none}.section{padding-top:88px}.section-head{align-items:flex-start;flex-direction:column;gap:24px}.section h2,.split-copy h2{font-size:34px}.history-card{grid-template-columns:82px 1fr auto}.score-title p{max-width:100%}.score-row{grid-template-columns:145px 1fr 28px;gap:13px}.footer{grid-template-columns:1fr;gap:13px}.contract{text-align:left}}
 .status b{font-size:10px;letter-spacing:.16em;color:var(--muted);font-weight:700}.status b.live{color:var(--green)}.status .updated{width:auto;height:auto;border-radius:0;background:none;box-shadow:none;color:var(--muted2);font-size:9px;letter-spacing:.08em;font-weight:500}
+
+/* v2.2 — Live Challengers */
+.challenger-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin-top:18px}
+.challenger-card{border:1px solid var(--line,#272727);border-radius:18px;padding:18px;background:rgba(255,255,255,.018)}
+.challenger-card.empty{grid-column:1/-1;min-height:100px;display:flex;flex-direction:column;justify-content:center;gap:8px;color:var(--muted,#8c8c8c)}
+.challenger-label,.challenger-top{font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted,#8c8c8c)}
+.challenger-top{display:flex;justify-content:space-between;gap:10px}
+.challenger-main{display:flex;align-items:flex-end;justify-content:space-between;gap:16px;margin:24px 0 18px}
+.challenger-main>div{display:flex;flex-direction:column;gap:6px;min-width:0}
+.challenger-main strong{font-size:26px;letter-spacing:-.04em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.challenger-main small{color:var(--muted,#8c8c8c);font-size:12px}
+.challenger-main>b{font-size:34px;line-height:1;color:var(--gold,#d6b35a)}
+.challenger-stats{display:flex;gap:16px;flex-wrap:wrap;padding-top:14px;border-top:1px solid var(--line,#272727);font-size:11px;color:var(--muted,#8c8c8c)}
+.challenger-stats b{color:var(--text,#f1f1ef);font-weight:600}
+.retention.bad{color:#c56f6f}
+.empty-row{text-align:center!important;color:var(--muted,#8c8c8c);padding:32px!important}
+@media (max-width:900px){.challenger-grid{grid-template-columns:1fr 1fr}}
+@media (max-width:620px){.challenger-grid{grid-template-columns:1fr}.challenger-card{padding:16px}}

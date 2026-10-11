@@ -51,13 +51,24 @@
         <div class="king-score">
           <span>KING SCORE</span>
           <strong id="kingScore">—</strong>
-          <small>v2.1</small>
+          <small>v2.2</small>
         </div>
         <div class="stat"><span>Current MC</span><strong id="kingMc">—</strong></div>
         <div class="stat"><span>Retention</span><strong id="kingRetention">—</strong></div>
         <div class="stat"><span>Transactions</span><strong id="kingTraders">—</strong></div>
         <div class="stat"><span>Graduated</span><strong id="kingGraduated">—</strong></div>
       </article>
+    </section>
+
+    <section class="shell section challengers-section">
+      <div class="section-head">
+        <div>
+          <div class="section-label">LIVE CHALLENGERS</div>
+          <h2>Survive the first hour.</h2>
+          <p class="updated">Qualified launches under 60 minutes can score, but cannot take the crown yet.</p>
+        </div>
+      </div>
+      <div class="challenger-grid" id="challengerGrid"></div>
     </section>
 
     <section id="leaderboard" class="shell section">
@@ -104,10 +115,10 @@
     <section id="score" class="shell section score-section">
       <div class="section-head score-title">
         <div>
-          <div class="section-label">KING SCORE v2.1</div>
+          <div class="section-label">KING SCORE v2.2</div>
           <h2>Built for strong launches.</h2>
         </div>
-        <p>Scores reward market strength, real trading activity and staying power instead of one short-lived candle.</p>
+        <p>Scores reward market strength, trading activity and staying power — then penalize deep drawdowns.</p>
       </div>
 
       <div class="score-list">
@@ -121,7 +132,7 @@
 
       <div class="note">
         <span>ELIGIBILITY + ANTI-GAMING</span>
-        Main leaderboard requires at least 50 transactions and $5K 24H volume. Retention reaches full weight only after 3 hours. One deployer is represented by its strongest eligible launch. Peak MC is the highest value observed by KINGMAKER's collector, not a guaranteed lifetime ATH. Offensive names are filtered from public display.
+        A launch needs at least 50 transactions, $5K 24H volume and 60 minutes of age before it can take the crown. Younger qualified launches appear as LIVE CHALLENGERS. Drawdown penalty: retention ≥70% = 0; 40–70% = −5; 20–40% = −10; 5–20% = −20; below 5% = −30. Retention reaches full weight after 3 hours. One deployer is represented by its strongest eligible launch. Peak MC is the highest value observed by KINGMAKER's collector, not a guaranteed lifetime ATH.
       </div>
     </section>
   </main>
