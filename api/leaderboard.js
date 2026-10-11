@@ -1,13 +1,13 @@
-const memoryCache = global.__kingmakerSupabaseCacheV21 || (global.__kingmakerSupabaseCacheV21 = new Map());
+const memoryCache = global.__kingmakerSupabaseCacheV22 || (global.__kingmakerSupabaseCacheV22 = new Map());
 const CACHE_MS = 60 * 1000;
 
-const SCORE_VERSION = '2.1';
+const SCORE_VERSION = '2.2';
 const MIN_TXNS = 50;
 const MIN_VOLUME = 5000;
+const KING_MIN_AGE_MINUTES = 60;
 const RETENTION_FULL_WEIGHT_MINUTES = 180;
 
-// Lightweight public-display moderation. These tokens are excluded from the public leaderboard,
-// but remain untouched in the database.
+// Lightweight public-display moderation. Tokens remain in the database; only public display is filtered.
 const BLOCKED_FRAGMENTS = [
   'nigger', 'nigga', 'nigr', 'faggot', 'kike', 'chink'
 ];
@@ -78,6 +78,43 @@ function ageMinutes(createdAt) {
   return Math.max(0, (Date.now() - t) / 60000);
 }
 
+function drawdownPenalty(retention) {
+  const r = Number(retention || 0);
+  if (r >= 70) return 0;
+  if (r >= 40) return 5;
+  if (r >= 20) return 10;
+  if (r >= 5) return 20;
+  return 30;
+}
+
+function publicToken(x, i) {
+  return {
+    rank: i + 1,
+    creator: x.creator,
+    creatorShort: short(x.creator),
+    mint: x.mint,
+    symbol: x.symbol,
+    name: x.name,
+    currentMc: x.currentMc,
+    observedPeakMc: x.peakMc,
+    peakMc: x.peakMc,
+    retention: x.retention,
+    retentionMaturity: x.retentionMaturity,
+    ageMinutes: Math.round(x.ageMinutes),
+    eligibleInMinutes: Math.max(0, Math.ceil(KING_MIN_AGE_MINUTES - x.ageMinutes)),
+    transactions: x.txns,
+    buys: x.buys,
+    sells: x.sells,
+    volume: x.volume,
+    liquidity: x.liquidity,
+    priceChange24h: x.priceChange24h,
+    graduated: x.graduated,
+    baseScore: Number(x.baseScore.toFixed(1)),
+    drawdownPenalty: x.drawdownPenalty,
+    score: Number(x.score.toFixed(1))
+  };
+}
+
 async function buildLeaderboard(range) {
   const hours = hoursFor(range);
   const since = new Date(Date.now() - hours * 3600 * 1000).toISOString();
@@ -128,84 +165,63 @@ async function buildLeaderboard(range) {
   }).filter(x => x.creator && x.mint && (x.currentMc > 0 || x.volume > 0 || x.graduated));
 
   const safeTokens = allTokens.filter(x => isBrandSafe(x.name, x.symbol));
-  const eligible = safeTokens.filter(x => x.txns >= MIN_TXNS && x.volume >= MIN_VOLUME);
 
-  if (!eligible.length) {
-    return {
-      ok: true,
-      range,
-      generatedAt: new Date().toISOString(),
-      source: 'PumpPortal → Supabase → DexScreener',
-      methodology: 'KING SCORE v2.1 — 25 MC / 25 volume / 20 transactions / 15 retention / 10 graduation / 5 liquidity',
-      eligibility: `≥${MIN_TXNS} txns and ≥$${MIN_VOLUME.toLocaleString('en-US')} 24h volume`,
-      scannedTokens: allTokens.length,
-      brandSafeTokens: safeTokens.length,
-      eligibleTokens: 0,
-      leaders: []
-    };
-  }
+  // Qualified launches have enough real activity to be scored at all.
+  // Under 60 minutes = LIVE CHALLENGER, 60+ minutes = eligible for the crown.
+  const qualified = safeTokens.filter(x => x.txns >= MIN_TXNS && x.volume >= MIN_VOLUME);
+  const kingEligible = qualified.filter(x => x.ageMinutes >= KING_MIN_AGE_MINUTES);
+  const challengerEligible = qualified.filter(x => x.ageMinutes < KING_MIN_AGE_MINUTES);
 
-  const mcVals = eligible.map(x => x.currentMc);
-  const volVals = eligible.map(x => x.volume);
-  const txnVals = eligible.map(x => x.txns);
-  const liqVals = eligible.map(x => x.liquidity);
+  if (qualified.length) {
+    // Use one comparison pool so challenger/king scores stay on the same scale.
+    const mcVals = qualified.map(x => x.currentMc);
+    const volVals = qualified.map(x => x.volume);
+    const txnVals = qualified.map(x => x.txns);
+    const liqVals = qualified.map(x => x.liquidity);
 
-  for (const x of eligible) {
-    const mcScore = percentile(x.currentMc, mcVals) * 25;
-    const volumeScore = percentile(x.volume, volVals) * 25;
-    const txScore = percentile(x.txns, txnVals) * 20;
-    const retentionScore = Math.max(0, Math.min(1, x.retention / 100)) * 15 * x.retentionMaturity;
-    const graduationScore = x.graduated ? 10 : 0;
-    const liquidityScore = percentile(x.liquidity, liqVals) * 5;
-    x.score = mcScore + volumeScore + txScore + retentionScore + graduationScore + liquidityScore;
-  }
-
-  // One deployer = its strongest eligible launch in the selected period.
-  const bestByCreator = new Map();
-  for (const x of eligible) {
-    const prev = bestByCreator.get(x.creator);
-    if (!prev || x.score > prev.score || (x.score === prev.score && x.currentMc > prev.currentMc)) {
-      bestByCreator.set(x.creator, x);
+    for (const x of qualified) {
+      const mcScore = percentile(x.currentMc, mcVals) * 25;
+      const volumeScore = percentile(x.volume, volVals) * 25;
+      const txScore = percentile(x.txns, txnVals) * 20;
+      const retentionScore = Math.max(0, Math.min(1, x.retention / 100)) * 15 * x.retentionMaturity;
+      const graduationScore = x.graduated ? 10 : 0;
+      const liquidityScore = percentile(x.liquidity, liqVals) * 5;
+      x.baseScore = mcScore + volumeScore + txScore + retentionScore + graduationScore + liquidityScore;
+      x.drawdownPenalty = drawdownPenalty(x.retention);
+      x.score = Math.max(0, x.baseScore - x.drawdownPenalty);
     }
   }
 
-  const leaders = [...bestByCreator.values()]
-    .sort((a, b) => (b.score - a.score) || (b.currentMc - a.currentMc) || (b.volume - a.volume))
-    .slice(0, 10)
-    .map((x, i) => ({
-      rank: i + 1,
-      creator: x.creator,
-      creatorShort: short(x.creator),
-      mint: x.mint,
-      symbol: x.symbol,
-      name: x.name,
-      currentMc: x.currentMc,
-      observedPeakMc: x.peakMc,
-      peakMc: x.peakMc,
-      retention: x.retention,
-      retentionMaturity: x.retentionMaturity,
-      ageMinutes: Math.round(x.ageMinutes),
-      transactions: x.txns,
-      buys: x.buys,
-      sells: x.sells,
-      volume: x.volume,
-      liquidity: x.liquidity,
-      priceChange24h: x.priceChange24h,
-      graduated: x.graduated,
-      score: Number(x.score.toFixed(1))
-    }));
+  function bestPerCreator(list) {
+    const map = new Map();
+    for (const x of list) {
+      const prev = map.get(x.creator);
+      if (!prev || x.score > prev.score || (x.score === prev.score && x.currentMc > prev.currentMc)) {
+        map.set(x.creator, x);
+      }
+    }
+    return [...map.values()]
+      .sort((a, b) => (b.score - a.score) || (b.currentMc - a.currentMc) || (b.volume - a.volume));
+  }
+
+  const leaders = bestPerCreator(kingEligible).slice(0, 10).map(publicToken);
+  const challengers = bestPerCreator(challengerEligible).slice(0, 5).map(publicToken);
 
   return {
     ok: true,
     range,
     generatedAt: new Date().toISOString(),
     source: 'PumpPortal → Supabase → DexScreener',
-    methodology: 'KING SCORE v2.1 — 25 MC / 25 volume / 20 transactions / 15 retention / 10 graduation / 5 liquidity',
-    eligibility: `≥${MIN_TXNS} txns and ≥$${MIN_VOLUME.toLocaleString('en-US')} 24h volume; retention reaches full weight after ${RETENTION_FULL_WEIGHT_MINUTES / 60}h`,
+    methodology: 'KING SCORE v2.2 — 25 MC / 25 volume / 20 transactions / 15 retention / 10 graduation / 5 liquidity − drawdown penalty',
+    eligibility: `Crown: ≥${MIN_TXNS} txns, ≥$${MIN_VOLUME.toLocaleString('en-US')} 24h volume and ≥${KING_MIN_AGE_MINUTES}m old. Under ${KING_MIN_AGE_MINUTES}m = LIVE CHALLENGER.`,
+    drawdownRule: 'Retention ≥70%: 0; 40–69.99%: −5; 20–39.99%: −10; 5–19.99%: −20; <5%: −30',
     scannedTokens: allTokens.length,
     brandSafeTokens: safeTokens.length,
-    eligibleTokens: eligible.length,
-    leaders
+    qualifiedTokens: qualified.length,
+    eligibleTokens: kingEligible.length,
+    challengerTokens: challengerEligible.length,
+    leaders,
+    challengers
   };
 }
 
