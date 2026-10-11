@@ -1,0 +1,19 @@
+Upload THESE FILES/FOLDERS to the ROOT of your GitHub repository:
+
+api/
+  leaderboard.js
+  ping.js
+index.html
+app.js
+style.css
+package.json
+README.md
+
+There must NOT be another folder above them in the repository.
+There should be NO vercel.json.
+
+After Vercel redeploys, test:
+https://YOUR-SITE.vercel.app/api/ping
+
+Expected result:
+{"ok":true,"service":"KINGMAKER API",...}
