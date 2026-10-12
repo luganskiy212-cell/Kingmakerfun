@@ -5,6 +5,16 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>KINGMAKER — Deployer Leaderboard</title>
   <meta name="description" content="KINGMAKER tracks top Pump.fun deployers and crowns one DEV KING every day." />
+  <meta name="theme-color" content="#090909" />
+  <meta property="og:type" content="website" />
+  <meta property="og:title" content="KINGMAKER — Who rules the trenches today?" />
+  <meta property="og:description" content="Live deployer leaderboard. One crown. One DEV KING every day." />
+  <meta property="og:image" content="/og-card.png" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="KINGMAKER — Deployer Leaderboard" />
+  <meta name="twitter:description" content="Live deployer leaderboard. One crown. One DEV KING every day." />
+  <meta name="twitter:image" content="/og-card.png" />
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
@@ -29,6 +39,7 @@
         <p>KINGMAKER ranks deployers by market strength, trading activity and staying power — then crowns the strongest launch.</p>
         <div class="hero-actions">
           <a class="primary" href="#leaderboard">View leaderboard</a>
+          <a class="secondary-launch disabled" id="projectTokenCta" href="#official-token" aria-disabled="true">$KING — NOT LAUNCHED</a>
           <a class="text-link" href="#score">How scoring works →</a>
         </div>
       </div>
@@ -110,6 +121,21 @@
       <div class="hall-list" id="hallGrid"></div>
     </section>
 
+    <section id="official-token" class="shell section official-token-section">
+      <div class="official-token-card">
+        <div>
+          <div class="section-label">OFFICIAL $KING</div>
+          <h2 id="tokenLaunchTitle">Not launched yet.</h2>
+          <p id="tokenLaunchCopy">The official contract will only be published on this website, @KingMakerFun on X and t.me/kingmakerfun.</p>
+        </div>
+        <div class="official-token-actions">
+          <code id="officialMint">CONTRACT: NOT LAUNCHED</code>
+          <button id="copyMint" class="copy-button" type="button" disabled>Copy CA</button>
+          <a id="officialPumpLink" class="pill official-pump disabled" href="#" aria-disabled="true">View token ↗</a>
+        </div>
+      </div>
+    </section>
+
     <section id="score" class="shell section score-section">
       <div class="section-head score-title">
         <div><div class="section-label">KING SCORE v2.6</div><h2>Built for strong launches.</h2></div>
@@ -134,10 +160,11 @@
 
   <footer class="shell footer">
     <div><span class="mark small">♛</span> KINGMAKER</div>
-    <div class="contract">CONTRACT <span>NOT LAUNCHED YET</span></div>
-    <div class="legal"><a href="https://t.me/kingmakerfun" target="_blank" rel="noopener noreferrer">Telegram</a><span> · </span><a href="https://x.com/KingMakerFun" target="_blank" rel="noopener noreferrer">X</a><span> · </span>Unofficial. Not affiliated with Pump.fun.</div>
+    <div class="contract">CONTRACT <span id="footerContract">NOT LAUNCHED YET</span></div>
+    <div class="legal"><a href="https://t.me/kingmakerfun" target="_blank" rel="noopener noreferrer">Telegram</a><span> · </span><a href="https://x.com/KingMakerFun" target="_blank" rel="noopener noreferrer">X</a><span> · </span>Unofficial. Not affiliated with Pump.fun. Rankings are experimental on-chain analytics, not financial advice.</div>
   </footer>
 
+  <script src="site-config.js"></script>
   <script src="app.js"></script>
 </body>
 </html>

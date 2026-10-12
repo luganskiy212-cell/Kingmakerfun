@@ -95,3 +95,26 @@ async function load(range='24h'){
 
 document.querySelectorAll('.tab').forEach(btn=>btn.addEventListener('click',()=>{document.querySelectorAll('.tab').forEach(b=>b.classList.remove('active'));btn.classList.add('active');load(btn.dataset.range)}));
 loadHall();load('24h');
+
+// v3.1 — official token config
+(function applyProjectConfig(){
+  const c=window.KINGMAKER_CONFIG||{};
+  const mint=String(c.tokenMint||'').trim();
+  const sym=String(c.tokenSymbol||'KING').replace(/^\$/,'');
+  const cta=document.getElementById('projectTokenCta');
+  const mintEl=document.getElementById('officialMint');
+  const copy=document.getElementById('copyMint');
+  const pump=document.getElementById('officialPumpLink');
+  const title=document.getElementById('tokenLaunchTitle');
+  const copyText=document.getElementById('tokenLaunchCopy');
+  const footer=document.getElementById('footerContract');
+  if(!mint){return;}
+  const short=mint.length>16?`${mint.slice(0,6)}…${mint.slice(-6)}`:mint;
+  if(cta){cta.textContent=`$${sym} — LIVE`;cta.href=pumpUrl(mint);cta.target='_blank';cta.rel='noopener noreferrer';cta.classList.remove('disabled');cta.removeAttribute('aria-disabled')}
+  if(mintEl)mintEl.textContent=mint;
+  if(title)title.textContent=`$${sym} is live.`;
+  if(copyText)copyText.textContent='Verify the contract here before using any third-party link. This is the only official KINGMAKER mint.';
+  if(footer)footer.textContent=short;
+  if(pump){pump.href=pumpUrl(mint);pump.target='_blank';pump.rel='noopener noreferrer';pump.classList.remove('disabled');pump.removeAttribute('aria-disabled')}
+  if(copy){copy.disabled=false;copy.addEventListener('click',async()=>{try{await navigator.clipboard.writeText(mint);const old=copy.textContent;copy.textContent='Copied';setTimeout(()=>copy.textContent=old,1300)}catch{copy.textContent='Copy failed'}})}
+})();
