@@ -1,7 +1,7 @@
-const memoryCache = global.__kingmakerSupabaseCacheV25 || (global.__kingmakerSupabaseCacheV25 = new Map());
+const memoryCache = global.__kingmakerSupabaseCacheV26 || (global.__kingmakerSupabaseCacheV26 = new Map());
 const CACHE_MS = 60 * 1000;
 
-const SCORE_VERSION = '2.4';
+const SCORE_VERSION = '2.6';
 const MIN_TXNS = 50;
 const MIN_VOLUME = 5000;
 const KING_MIN_AGE_MINUTES = 60;
@@ -108,6 +108,35 @@ async function sbGet(path) {
   return body;
 }
 
+async function fetchQualifiedRows({ since, select }) {
+  const PAGE_SIZE = 1000;
+  let offset = 0;
+  let pagesFetched = 0;
+  const rows = [];
+
+  while (true) {
+    const qs = new URLSearchParams();
+    qs.set('select', select);
+    qs.set('created_at', `gte.${since}`);
+    qs.set('txns_24h', `gte.${MIN_TXNS}`);
+    qs.set('volume_24h_usd', `gte.${MIN_VOLUME}`);
+    qs.set('order', 'market_cap_usd.desc.nullslast,mint.asc');
+    qs.set('limit', String(PAGE_SIZE));
+    qs.set('offset', String(offset));
+
+    const page = await sbGet(`tokens?${qs.toString()}`);
+    if (!Array.isArray(page)) throw new Error('Unexpected Supabase response');
+
+    rows.push(...page);
+    pagesFetched += 1;
+
+    if (page.length < PAGE_SIZE) break;
+    offset += PAGE_SIZE;
+  }
+
+  return { rows, pagesFetched };
+}
+
 function hoursFor(range) {
   if (range === '7d') return 168;
   if (range === '30d') return 720;
@@ -193,15 +222,9 @@ async function buildLeaderboard(range) {
     'txns_24h','buys_24h','sells_24h','price_change_24h','updated_at'
   ].join(',');
 
-  const qs = new URLSearchParams();
-  qs.set('select', select);
-  qs.set('created_at', `gte.${since}`);
-  qs.set('or', '(market_cap_usd.gt.0,volume_24h_usd.gt.0,graduated.eq.true)');
-  qs.set('order', 'market_cap_usd.desc.nullslast');
-  qs.set('limit', '2000');
-
-  const rows = await sbGet(`tokens?${qs.toString()}`);
-  if (!Array.isArray(rows)) throw new Error('Unexpected Supabase response');
+  // v2.6: filter qualified launches inside Supabase and paginate through all matches.
+  // This avoids the 1,000-row project cap hiding eligible deployers during busy periods.
+  const { rows, pagesFetched } = await fetchQualifiedRows({ since, select });
 
   const allTokens = rows.map(r => {
     const currentMc = Number(r.market_cap_usd || 0);
@@ -236,7 +259,8 @@ async function buildLeaderboard(range) {
   const nonPairAssetTokens = allTokens.filter(x => !SUPPORTED_PAIR_ASSET_MINTS.has(x.mint));
   const safeTokens = nonPairAssetTokens.filter(x => isBrandSafe(x.name, x.symbol));
 
-  // Qualified launches have enough real activity to be scored at all.
+  // Supabase already applied the activity qualification. Keep this defensive check
+  // in case malformed/null rows slip through.
   // Under 60 minutes = LIVE CHALLENGER, 60+ minutes = eligible for the crown.
   const qualified = safeTokens.filter(x => x.txns >= MIN_TXNS && x.volume >= MIN_VOLUME);
   const kingEligible = qualified.filter(x => x.ageMinutes >= KING_MIN_AGE_MINUTES);
@@ -282,11 +306,13 @@ async function buildLeaderboard(range) {
     range,
     generatedAt: new Date().toISOString(),
     source: 'PumpPortal → Supabase → DexScreener',
-    methodology: 'KING SCORE v2.5 — 25 MC / 25 volume / 20 transactions / 15 retention / 10 graduation / 5 liquidity − drawdown penalty',
+    methodology: 'KING SCORE v2.6 — 25 MC / 25 volume / 20 transactions / 15 retention / 10 graduation / 5 liquidity − drawdown penalty',
     eligibility: `Crown: ≥${MIN_TXNS} txns, ≥$${MIN_VOLUME.toLocaleString('en-US')} 24h volume and ≥${KING_MIN_AGE_MINUTES}m old. Under ${KING_MIN_AGE_MINUTES}m = LIVE CHALLENGER.`,
     drawdownRule: 'Retention ≥70%: 0; 40–69.99%: −5; 20–39.99%: −10; 5–19.99%: −20; <5%: −30',
-    dataIntegrity: 'DexScreener base-token pair only; supported pair-asset mints excluded + pre-launch pair guard (collector v1.5)',
+    dataIntegrity: 'DexScreener base-token pair only; supported pair-asset mints excluded + pre-launch pair guard; Supabase server-side qualification + full pagination',
     scannedTokens: allTokens.length,
+    qualifiedTokensFetched: rows.length,
+    pagesFetched,
     pairAssetFilteredTokens: allTokens.length - nonPairAssetTokens.length,
     brandSafeTokens: safeTokens.length,
     qualifiedTokens: qualified.length,
