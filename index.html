@@ -9,10 +9,7 @@
 </head>
 <body>
   <header class="nav shell">
-    <a class="brand" href="#top" aria-label="KINGMAKER home">
-      <span class="mark">♛</span>
-      <span>KINGMAKER</span>
-    </a>
+    <a class="brand" href="#top" aria-label="KINGMAKER home"><span class="mark">♛</span><span>KINGMAKER</span></a>
     <nav class="desktop-nav">
       <a href="#leaderboard">Leaderboard</a>
       <a href="#hall">Hall of Kings</a>
@@ -47,15 +44,11 @@
         <div class="king-id">
           <div class="avatar">♛</div>
           <div>
-            <div class="wallet" id="kingWallet">—</div>
-            <div class="best">Best launch <strong id="kingToken">—</strong></div>
+            <a class="wallet wallet-link" id="kingWallet" href="#">—</a>
+            <div class="best">Best launch <a id="kingToken" class="token-link" href="#">—</a></div>
           </div>
         </div>
-        <div class="king-score">
-          <span>KING SCORE</span>
-          <strong id="kingScore">—</strong>
-          <small>v2.2</small>
-        </div>
+        <div class="king-score"><span>KING SCORE</span><strong id="kingScore">—</strong><small>v2.6</small></div>
         <div class="stat"><span>Current MC</span><strong id="kingMc">—</strong></div>
         <div class="stat"><span>Retention</span><strong id="kingRetention">—</strong></div>
         <div class="stat"><span>Transactions</span><strong id="kingTraders">—</strong></div>
@@ -95,6 +88,7 @@
               <th>Rank</th>
               <th>Deployer</th>
               <th>Best launch</th>
+              <th>Age</th>
               <th>Current MC</th>
               <th>Volume 24H</th>
               <th>Retention</th>
@@ -104,23 +98,21 @@
           <tbody id="leaderboardRows"></tbody>
         </table>
       </div>
+      <p class="table-footnote">Rank movement is compared with the last leaderboard load in this browser.</p>
     </section>
 
     <section id="hall" class="shell section split-section">
       <div class="split-copy">
         <div class="section-label">HALL OF KINGS</div>
         <h2>Yesterday expires.<br>The crown doesn't.</h2>
-        <p>Daily winners are permanently recorded in the Hall of Kings.</p>
+        <p>One daily winner is permanently recorded. The Hall uses UTC day boundaries so every crown has one canonical date.</p>
       </div>
       <div class="hall-list" id="hallGrid"></div>
     </section>
 
     <section id="score" class="shell section score-section">
       <div class="section-head score-title">
-        <div>
-          <div class="section-label">KING SCORE v2.2</div>
-          <h2>Built for strong launches.</h2>
-        </div>
+        <div><div class="section-label">KING SCORE v2.6</div><h2>Built for strong launches.</h2></div>
         <p>Scores reward market strength, trading activity and staying power — then penalize deep drawdowns.</p>
       </div>
 
@@ -143,13 +135,7 @@
   <footer class="shell footer">
     <div><span class="mark small">♛</span> KINGMAKER</div>
     <div class="contract">CONTRACT <span>NOT LAUNCHED YET</span></div>
-    <div class="legal">
-      <a href="https://t.me/kingmakerfun" target="_blank" rel="noopener noreferrer">Telegram</a>
-      <span> · </span>
-      <a href="https://x.com/KingMakerFun" target="_blank" rel="noopener noreferrer">X</a>
-      <span> · </span>
-      Unofficial. Not affiliated with Pump.fun.
-    </div>
+    <div class="legal"><a href="https://t.me/kingmakerfun" target="_blank" rel="noopener noreferrer">Telegram</a><span> · </span><a href="https://x.com/KingMakerFun" target="_blank" rel="noopener noreferrer">X</a><span> · </span>Unofficial. Not affiliated with Pump.fun.</div>
   </footer>
 
   <script src="app.js"></script>

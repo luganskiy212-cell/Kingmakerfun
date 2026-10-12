@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Developer — KINGMAKER</title>
+  <meta name="description" content="KINGMAKER deployer profile." />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <header class="nav shell">
+    <a class="brand" href="index.html"><span class="mark">♛</span><span>KINGMAKER</span></a>
+    <div class="social-links"><a class="pill" href="https://t.me/kingmakerfun" target="_blank" rel="noopener noreferrer">Telegram ↗</a><a class="pill" href="https://x.com/KingMakerFun" target="_blank" rel="noopener noreferrer">X ↗</a></div>
+  </header>
+  <main class="shell dev-page">
+    <a class="back-link" href="index.html#leaderboard">← Back to leaderboard</a>
+    <section class="dev-hero">
+      <div>
+        <div class="dev-kicker" id="devRankLabel">DEPLOYER PROFILE</div>
+        <h1 id="devShort">Loading…</h1>
+        <div class="dev-address" id="devAddress">—</div>
+        <div class="dev-actions">
+          <a id="solscanLink" class="primary" href="#" target="_blank" rel="noopener noreferrer">View on Solscan ↗</a>
+          <button id="copyWallet" class="copy-button" type="button">Copy wallet</button>
+        </div>
+      </div>
+      <div class="dev-summary">
+        <div class="dev-metric"><span>Launches tracked</span><strong id="statLaunches">—</strong></div>
+        <div class="dev-metric"><span>Graduated</span><strong id="statGraduated">—</strong></div>
+        <div class="dev-metric"><span>Best observed MC</span><strong id="statBestMc">—</strong></div>
+        <div class="dev-metric"><span>Combined 24H volume</span><strong id="statVolume">—</strong></div>
+        <div class="dev-metric king"><span>King titles</span><strong id="statTitles">—</strong></div>
+        <div class="dev-metric"><span>Best token</span><strong id="statBestToken">—</strong></div>
+      </div>
+    </section>
+
+    <section class="profile-section">
+      <div class="section-head"><div><div class="section-label">LAUNCH HISTORY</div><h2>Tracked launches</h2></div><p class="updated" id="profileMeta">Loading…</p></div>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Token</th><th>Age</th><th>Current MC</th><th>Observed peak</th><th>24H volume</th><th>Txns</th><th>Retention</th><th>Graduated</th></tr></thead>
+          <tbody id="devRows"></tbody>
+        </table>
+      </div>
+    </section>
+
+    <section class="profile-section">
+      <div class="section-label">CROWN HISTORY</div>
+      <div class="hall-list" id="devKings"></div>
+    </section>
+  </main>
+  <footer class="shell footer"><div><span class="mark small">♛</span> KINGMAKER</div><div class="contract">CONTRACT <span>NOT LAUNCHED YET</span></div><div class="legal">Unofficial. Not affiliated with Pump.fun.</div></footer>
+  <script src="dev.js"></script>
+</body>
+</html>

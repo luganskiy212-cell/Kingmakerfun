@@ -1,26 +1,45 @@
-# KINGMAKER — Live Beta
+# KINGMAKER v3 — Product UI + Hall of Kings
 
-The site works in demo mode locally. When deployed to Vercel with a Bitquery OAuth access token in the `BITQUERY_TOKEN` environment variable, `/api/leaderboard` requests current Pump.fun / PumpSwap on-chain data.
+This update leaves the working collector and KING SCORE v2.6 unchanged.
 
-## Beginner setup
+## New
+- Clickable deployer profiles (`dev.html?wallet=...`).
+- Pump.fun, DexScreener and Solscan links throughout the leaderboard.
+- Age added to leaderboard rows.
+- Local rank movement indicator (compared with the last leaderboard load in the same browser).
+- Real Hall of Kings loaded from the existing `kings` table.
+- Developer profile with launch count, graduations, best observed MC, combined current 24H volume, launch history and crown history.
+- Daily UTC crown archiver at `/api/crown` via Vercel Cron.
+- All arbitrary on-chain token/deployer text is escaped before being rendered into HTML.
 
-1. Create a Bitquery account and generate an OAuth access token.
-2. Create a free GitHub repository and upload every file/folder from this directory (including `api`).
-3. In Vercel choose **Add New → Project**, import the GitHub repository, and deploy it.
-4. In **Vercel → Project → Settings → Environment Variables**, add:
-   - Name: `BITQUERY_TOKEN`
-   - Value: your Bitquery token
-5. Redeploy the project.
-6. Open the public Vercel URL. The status at the top should change from **DEMO DATA** to **LIVE ON-CHAIN**.
+## Deploy to the Vercel/GitHub website repo
+Replace/add these files at repository root:
 
-Never put the Bitquery token into `app.js` or `index.html`; the serverless API keeps it private.
+- `index.html`
+- `app.js`
+- `style.css`
+- `dev.html`
+- `dev.js`
+- `api/leaderboard.js`
+- `api/hall.js`
+- `api/dev.js`
+- `api/crown.js`
+- `vercel.json`
 
-## Current KING SCORE v1.0
+No Railway collector change is required.
 
-- Unique traders — 30
-- Current market cap — 20
-- Market-cap retention vs peak in selected period — 20
-- Trading volume — 20
-- PumpSwap graduation — 10
+## One-time Supabase migration
+Run `SQL_MIGRATION.sql` in Supabase SQL Editor. It creates a unique index so a UTC day can only be crowned once.
 
-A deployer is represented by its best-scoring launch. The beta uses Bitquery's MEV-filtered Trading cube. Deeper wash-trade / related-wallet clustering is a later scoring revision.
+## Vercel environment variable
+Add one new Secret environment variable:
+
+`CRON_SECRET = <long random value>`
+
+Keep your existing `SUPABASE_URL` and `SUPABASE_SECRET_KEY` / `SUPABASE_SERVICE_ROLE_KEY` variables.
+
+Vercel Cron calls `/api/crown` once per day at 00:05 UTC. If `CRON_SECRET` exists, Vercel sends it as `Authorization: Bearer <CRON_SECRET>` to secure the cron endpoint.
+
+## Social links
+- Telegram: https://t.me/kingmakerfun
+- X: https://x.com/KingMakerFun
