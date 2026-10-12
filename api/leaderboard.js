@@ -323,7 +323,7 @@ async function buildLeaderboard(range) {
   };
 }
 
-module.exports = async function handler(req, res) {
+async function handler(req, res) {
   const range = String(req.query.range || '24h').toLowerCase();
   if (!['24h', '7d', '30d'].includes(range)) {
     return res.status(400).json({ ok: false, error: 'Unsupported range' });
@@ -347,4 +347,7 @@ module.exports = async function handler(req, res) {
       hint: 'Check SUPABASE_URL and SUPABASE_SECRET_KEY in Vercel Environment Variables.'
     });
   }
-};
+}
+
+module.exports = handler;
+module.exports.buildLeaderboard = buildLeaderboard;
